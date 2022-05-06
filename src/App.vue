@@ -1,6 +1,15 @@
 <template>
   <main-screen v-if="statusMatch==='default'" @onStart="onHandleBeforeStart($event)"/>
-  <interact-screen v-if="statusMatch==='match'" :cardsContext="settings.cardsContext"/>
+  <interact-screen
+      v-if="statusMatch==='match'"
+      :cardsContext="settings.cardsContext"
+      @onFinish="onGetResult"
+  />
+  <result-screen
+      v-if="statusMatch==='result'"
+      :timer="timer"
+      @onStartAgain="statusMatch='default'"
+  />
   <coppy-screen/>
 </template>
 
@@ -9,9 +18,16 @@ import CoppyrightScreen from '@/components/CoppyrightScreen'
 import MainScreen from "@/components/MainScreen";
 import InteractScreen from "@/components/InteractScreen";
 import {shuffled} from "@/utils/array";
+import ResultScreen from "@/components/ResultScreen";
 
 export default {
   name: 'App',
+  components: {
+    CoppyScreen: CoppyrightScreen,
+    MainScreen,
+    InteractScreen,
+    ResultScreen
+  },
   data() {
     return {
       settings: {
@@ -19,13 +35,9 @@ export default {
         cardsContext: [],
         startedAt:null
       },
-      statusMatch: "default"
+      statusMatch: "default",
+      timer:0
     }
-  },
-  components: {
-    CoppyScreen: CoppyrightScreen,
-    MainScreen,
-    InteractScreen
   },
   methods: {
     onHandleBeforeStart(config) {
@@ -38,6 +50,11 @@ export default {
       this.settings.startedAt = new Date().getTime()
 
       this.statusMatch = 'match'
+    },
+    onGetResult(){
+      console.log(123)
+      this.timer= new Date().getTime() -this.settings.startedAt
+      this.statusMatch = 'result'
     }
   }
 }

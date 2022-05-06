@@ -41,3 +41,8 @@
     transform: rotateY(-180deg);
   }
 }
+.disabled{
+  .card__inner{
+    cursor: default;
+  }
+}
